@@ -1,0 +1,14 @@
+body {
+  @apply bg-secondary text-accent font-sans;
+}
+
+button {
+  @apply bg-primary text-accent rounded-md p-2;
+}
+
+.navbar {
+  @apply bg-secondary text-accent;
+}
+
+
+/* Apply additional styles as needed for your components */
