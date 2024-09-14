@@ -125,6 +125,7 @@ const TradePage = () => {
   const scrollContainerRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
   const [selectedTrade, setSelectedTrade] = useState(null);
+  const [tradeTitle, setTradeTitle] = useState(""); // Stato per il titolo del trade
 
   const navigate = useNavigate();
 
@@ -276,6 +277,7 @@ const TradePage = () => {
         requestedHeroes: requestedTrade.map((card) => card._id),
         proposedCredits: Number(offerCredits),
         requestedCredits: Number(requestCredits),
+        name: tradeTitle,
       });
       if (response.status === 201) {
         setNotification({
@@ -288,6 +290,7 @@ const TradePage = () => {
         setRequestedTrade([]);
         setOfferCredits(0);
         setRequestCredits(0);
+        setTradeTitle(""); // Resetta il campo del titolo
       }
     } catch (error) {
       console.error("Error proposing trade:", error);
@@ -518,6 +521,16 @@ const TradePage = () => {
         <Grid item xs={12}>
           <Card>
             <CardContent>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Title
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Add a title to your trade..."
+                value={tradeTitle} // Bind del valore con lo stato
+                onChange={(e) => setTradeTitle(e.target.value)} // Aggiorna lo stato con il valore inserito
+                sx={{ mb: 2 }}
+              />
               <Typography variant="h6" fontWeight="bold" gutterBottom>
                 Proposed Trade
               </Typography>

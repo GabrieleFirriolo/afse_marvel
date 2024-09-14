@@ -10,6 +10,7 @@ const proposeTrade = async (req, res) => {
     requestedHeroes,
     proposedCredits,
     requestedCredits,
+    name,
   } = req.body;
   try {
     if (proposedHeroes.length === 0 || requestedHeroes.length === 0) {
@@ -63,6 +64,7 @@ const proposeTrade = async (req, res) => {
       requestedHeroes,
       proposedCredits,
       requestedCredits,
+      name,
     });
     await trade.save();
     res.status(201).json({ message: "Trade proposed successfully", trade });
@@ -216,7 +218,9 @@ const deleteTrade = async (req, res) => {
         .json({ error: "Unauthorized to delete this trade" });
     }
     //
-    const proposer = await User.findById(trade.proposer._id).populate("album.hero");
+    const proposer = await User.findById(trade.proposer._id).populate(
+      "album.hero"
+    );
 
     // Riaggiungi le carte proposte all'album del proponente
     trade.proposedHeroes.forEach((hero) => {
