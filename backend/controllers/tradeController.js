@@ -25,10 +25,13 @@ const proposeTrade = async (req, res) => {
       const heroInAlbum = user.album.find(
         (entry) => entry.hero._id.toString() === heroId
       );
-      if (!heroInAlbum || heroInAlbum.count <= 0) {
+      if (!heroInAlbum || heroInAlbum.count <= 1) {
         return res
           .status(400)
-          .json({ error: "You do not own one or more proposed heroes" });
+          .json({
+            error:
+              "You do not own (or don't have duplicate) one or more proposed heroes",
+          });
       }
     }
     // Temporaneamente rimuovi gli eroi proposti dall'album
@@ -197,8 +200,6 @@ const acceptTrade = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-// TODO:
-// Modifica dello scambio
 
 // Rimozione di uno scambio ancora pending
 const deleteTrade = async (req, res) => {
@@ -240,7 +241,6 @@ const deleteTrade = async (req, res) => {
     }
     await proposer.save();
 
-    //
     // Cancella lo scambio
     await Trade.findByIdAndDelete(tradeId);
     res.status(200).json({ message: "Trade deleted successfully" });
@@ -248,6 +248,7 @@ const deleteTrade = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 // Ottieni gli ultimi 15 trade proposti
 const getLatestTrades = async (req, res) => {
   try {
@@ -284,7 +285,7 @@ const getTradeCards = async (req, res) => {
     let limitedCards = [];
     if (type === "offer") {
       const ownedCards = user.album
-        .filter((entry) => searchRegex.test(entry.hero.name)) // Filtraggio delle carte offerte
+        .filter((entry) => searchRegex.test(entry.hero.name) && entry.count > 1) // Filtraggio delle carte offerte
         .map((entry) => ({
           _id: entry.hero._id,
           name: entry.hero.name,
@@ -306,6 +307,7 @@ const getTradeCards = async (req, res) => {
     } else {
       return res.status(400).json({ error: "Invalid type parameter" });
     }
+    
     // Risposta JSON
     res.json({ cards: limitedCards });
   } catch (error) {

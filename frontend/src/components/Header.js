@@ -16,6 +16,7 @@ import { keyframes } from "@mui/system";
 import creditsImg from "../assets/images/creditsImg.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import { getHeroById } from "../utils/api";
+import { Link } from "react-router-dom";
 
 const increaseAnimation = keyframes`
   0% { color: green; transform: scale(1); }
@@ -206,8 +207,7 @@ const Header = ({ toggleDrawer, isMobile }) => {
               My Account
             </Typography>
           </MenuItem>
-          <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Support</MenuItem>
+          <MenuItem component={Link} to="/profile">Settings</MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
       </Box>

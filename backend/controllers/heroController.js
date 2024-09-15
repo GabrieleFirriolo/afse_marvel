@@ -51,8 +51,6 @@ const fetchMarvelData = async (resource, heroId, page, search) => {
   };
 
   try {
-    console.log("FETCHING ",resource, heroId, page, search);
-
     const response = await axios.get(
       `${MARVEL_API_BASE_URL}/characters/${heroId}/${resource}`,
       { params }

@@ -49,9 +49,6 @@ export const UserProvider = ({ children }) => {
       console.error("Failed to fetch album:", error);
     }
   };
-
-  //TODO:
-  // da sostituire con quella in Package.js
   const fetchPackages = async () => {
     try {
       const id = localStorage.getItem("id");
