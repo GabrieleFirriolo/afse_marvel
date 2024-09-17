@@ -11,6 +11,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import API from "../utils/api";
+import Notification from "../components/Notification"; // Importa il componente Notification
 
 const CreatePackage = () => {
   const [packageName, setPackageName] = useState("");
@@ -22,7 +23,11 @@ const CreatePackage = () => {
     epic: 0,
     legendary: 0,
   });
-
+  const [notification, setNotification] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const getMaxAllowed = (type) => {
     const totalGuaranteed =
       guaranteedHeroes.rare +
@@ -39,6 +44,9 @@ const CreatePackage = () => {
       [type]: value,
     });
   };
+  const handleNotificationClose = () => {
+    setNotification((prev) => ({ ...prev, open: false }));
+  };
 
   const handleCreatePackage = async () => {
     try {
@@ -51,9 +59,12 @@ const CreatePackage = () => {
         guaranteedEpic: guaranteedHeroes.epic,
         guaranteedLegendary: guaranteedHeroes.legendary,
       });
-
       if (response.status === 201) {
-        alert("Package created successfully!");
+        setNotification({
+          open: true,
+          message: "Package created successfully!",
+          severity: "success",
+        });
         // Reset form fields
         setPackageName("");
         setDescription("");
@@ -63,7 +74,14 @@ const CreatePackage = () => {
       }
     } catch (error) {
       console.error("Error creating package:", error);
-      alert("Failed to create package");
+      setNotification({
+        open: true,
+        message: `Failed to create package: ${
+          error.response?.data?.error || error.message
+        }`,
+        severity: "error",
+      });
+      console.error("Error creating package:", error);
     }
   };
   const handleChangeNumber = (number) => (e) => {
@@ -168,6 +186,12 @@ const CreatePackage = () => {
           </Button>
         </Grid>
       </Grid>
+      <Notification
+        open={notification.open}
+        message={notification.message}
+        severity={notification.severity}
+        onClose={handleNotificationClose}
+      />
     </Box>
   );
 };

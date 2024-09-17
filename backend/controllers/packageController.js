@@ -93,9 +93,11 @@ const buyPackage = async (req, res) => {
   try {
     const user = await User.findById(userId);
     const packageType = await PackageType.findById(packageTypeId);
-
+    if (quantity < 1){
+      return res.status(400).json({ error: "Quantity must be greater than 0" });
+    }
     const totalPrice = packageType.price * quantity;
-
+    console.log(user.credits, totalPrice);
     if (user.credits < totalPrice) {
       return res.status(400).json({ error: "Not enough credits" });
     }

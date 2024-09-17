@@ -39,13 +39,16 @@ const PackageCard = ({ pack }) => {
 
   const handleConfirmBuy = async () => {
     try {
-      buyPackage(pack._id, quantity);
-      setNotification({
-        open: true,
-        message: `Package bought successfully : ${quantity} `,
-        severity: "success",
-      });
-      handleDialogClose();
+      const response = await buyPackage(pack._id, quantity);
+      console.log(response);
+      if (response.status === 201) {
+        setNotification({
+          open: true,
+          message: `Package bought successfully : ${quantity} `,
+          severity: "success",
+        });
+        handleDialogClose();
+      }
     } catch (error) {
       setNotification({
         open: true,
@@ -172,7 +175,14 @@ const PackageCard = ({ pack }) => {
               }}
             />
             <CardContent>
-              <Typography variant="h6" component="div">
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{
+                  color: "#ffffff",
+                  fontSize: Math.max(12, 18 - pack.name.length / 3), // Dynamic font size based on text length
+                }}
+              >
                 {pack.name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -208,7 +218,7 @@ const PackageCard = ({ pack }) => {
                 alt="coin"
                 style={{ width: "13px", marginRight: "5px", marginLeft: "5px" }}
               />
-              {pack.price * quantity} 
+              {pack.price * quantity}
             </Typography>
             <DialogActions sx={{ mt: 2, justifyContent: "space-between" }}>
               <Button

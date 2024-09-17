@@ -34,6 +34,8 @@ const TradePlatformPage = () => {
   const [showUserTrades, setShowUserTrades] = useState(false);
 
   const { user } = useContext(UserContext);
+  const id = localStorage.getItem("id");
+
   const [notification, setNotification] = useState({
     open: false,
     message: "",
@@ -71,9 +73,7 @@ const TradePlatformPage = () => {
   };
   // Add a function to handle deleting a trade
   const handleDeleteTrade = async (tradeId) => {
-    const id = localStorage.getItem("id");
     try {
-      console.log(id)
       const response = await API.post(`/trades/delete/${tradeId}`, {
         userId: id,
       });
@@ -107,7 +107,7 @@ const TradePlatformPage = () => {
         )
       : true;
     const userTradeMatch = showUserTrades
-      ? trade.proposer._id === user._id
+      ? trade.proposer._id === id
       : true;
     return usernameMatch && cardMatch && userTradeMatch;
   });

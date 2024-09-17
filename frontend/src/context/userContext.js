@@ -15,6 +15,7 @@ export const UserProvider = ({ children }) => {
       try {
         const token = localStorage.getItem("token");
         const id = localStorage.getItem("id");
+        console.log(id);
         if (token) {
           const response = await API.get(`/users/profile/${id}`);
           setUser(response.data.user);
@@ -28,17 +29,18 @@ export const UserProvider = ({ children }) => {
     fetchUser();
   }, []);
 
-  const fetchAlbum = async (page, searchTerm, selectedRarity) => {
+  const fetchAlbum = async (page, searchTerm, selectedRarity, quantityOrder) => {
     if (!page) page = 1;
     if (!searchTerm) searchTerm = "";
     if (!selectedRarity) selectedRarity = "";
+    if (!quantityOrder) quantityOrder = "asc";
     try {
       const token = localStorage.getItem("token");
       const id = localStorage.getItem("id");
       if (token) {
         console.log(page, searchTerm, selectedRarity);
         const response = await API.get(
-          `/users/album/${id}?page=${page}&searchTerm=${searchTerm}&selectedRarity=${selectedRarity}`
+          `/users/album/${id}?page=${page}&searchTerm=${searchTerm}&selectedRarity=${selectedRarity}&quantityOrder=${quantityOrder}`
         );
         //setAlbum(response.data.album);
         setTotalCards(response.data.totalCards);
@@ -119,10 +121,13 @@ export const UserProvider = ({ children }) => {
           credits: response.data.user.credits,
         };
         setUser(updatedUser);
+        return response;
       }
     } catch (error) {
       console.error("Failed to buy package:", error);
+      throw error; 
     }
+
   };
 
   const openPackage = async (packageId) => {
@@ -164,8 +169,10 @@ export const UserProvider = ({ children }) => {
         };
         setUser(updatedUser);
       }
+      return response;
     } catch (error) {
       console.error("Failed to buy credits:", error);
+      throw error;
     }
   };
 

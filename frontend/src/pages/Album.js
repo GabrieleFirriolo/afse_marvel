@@ -235,10 +235,10 @@ const AlbumPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const fetchData = useCallback(
-    debounce(async (search, rarity, page) => {
+    debounce(async (search, rarity, page, quantityOrder) => {
       setLoading(true);
       try {
-        const response = await fetchAlbum(page, search, rarity);
+        const response = await fetchAlbum(page, search, rarity, quantityOrder);
         console.log(response);
         setAlbum((prevAlbum) => [...prevAlbum, ...response.album]); // Append new data
         setTotalPages(response.totalPages);
@@ -252,14 +252,16 @@ const AlbumPage = () => {
     []
   );
   useEffect(() => {
-    fetchData(searchTerm, selectedRarity, page);
-  }, [searchTerm, selectedRarity, page]);
+    fetchData(searchTerm, selectedRarity, page, quantityOrder);
+  }, [searchTerm, selectedRarity, page,quantityOrder]);
 
   useEffect(() => {
     setLoading(true);
     setAlbum([]); // Clear the current album when filters change
     setPage(1); // Reset the page to 1
-  }, [searchTerm, selectedRarity]);
+  }, [searchTerm, selectedRarity, quantityOrder]);
+
+
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };

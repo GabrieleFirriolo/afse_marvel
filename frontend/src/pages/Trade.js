@@ -291,6 +291,7 @@ const TradePage = () => {
         setOfferCredits(0);
         setRequestCredits(0);
         setTradeTitle(""); // Resetta il campo del titolo
+        navigate("/trade/browse-all?showMyTrades=true");
       }
     } catch (error) {
       console.error("Error proposing trade:", error);

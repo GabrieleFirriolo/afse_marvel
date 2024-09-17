@@ -22,7 +22,7 @@ const creditOptions = [
 
 const PurchaseCredits = () => {
   const [selectedOption, setSelectedOption] = useState(null);
-  const [customAmount, setCustomAmount] = useState("");
+  const [customAmount, setCustomAmount] = useState(0);
   const [customPrice, setCustomPrice] = useState("");
   const { user, buyCredits } = React.useContext(UserContext);
   const [notification, setNotification] = useState({
@@ -41,7 +41,7 @@ const PurchaseCredits = () => {
 
   const handleCustomAmountChange = (event) => {
     setSelectedOption(null);
-    setCustomAmount(event.target.value);
+    setCustomAmount(Number(event.target.value));
     setCustomPrice(event.target.value * 0.09); // prezzo stimato per i crediti personalizzati
   };
 
@@ -49,12 +49,14 @@ const PurchaseCredits = () => {
     const amount = selectedOption ? selectedOption.amount : customAmount;
     const price = selectedOption ? selectedOption.price : customPrice;
     try {
-      await buyCredits(amount);
-      setNotification({
-        open: true,
-        message: "Credits purchased successfully!",
-        severity: "success",
-      });
+      const response = await buyCredits(amount);
+      if (response.status === 201) {
+        setNotification({
+          open: true,
+          message: "Credits purchased successfully!",
+          severity: "success",
+        });
+      }
     } catch (error) {
       setNotification({
         open: true,
@@ -127,6 +129,7 @@ const PurchaseCredits = () => {
             value={customAmount}
             onChange={handleCustomAmountChange}
             sx={{ mr: 2 }}
+            inputProps={{ min: 0 }}
           />
           <TextField
             label="Price ($)"

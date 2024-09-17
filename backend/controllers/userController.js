@@ -74,7 +74,7 @@ const loginUser = async (req, res) => {
       token,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -85,7 +85,9 @@ const purchaseCredits = async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: "User not found" });
-
+    if (credits < 1) {
+      return res.status(400).json({ error: "Invalid credits amount" });
+    }
     user.credits += credits;
     await user.save();
     res.status(200).json({
@@ -147,7 +149,7 @@ const sellHero = async (req, res) => {
 
 // Modifica utente
 const updateUser = async (req, res) => {
-  const { userId,username, email, favoriteHero } = req.body;
+  const { userId, username, email, favoriteHero } = req.body;
   try {
     const user = await User.findById(userId).select("-password -album");
     if (!user) {
@@ -179,11 +181,17 @@ const getUserStats = async (req, res) => {
   try {
     // Find the user and populate the album to count the total cards
     const user = await User.findById(userId).select("-password");
-    const totalCards = user.album.reduce((total, item) => total + item.count, 0);
+    const totalCards = user.album.reduce(
+      (total, item) => total + item.count,
+      0
+    );
 
     // Find the user's active trades
-    const activeTrades = await Trade.countDocuments({ proposer: userId, status: "pending" });
-    console.log(activeTrades)
+    const activeTrades = await Trade.countDocuments({
+      proposer: userId,
+      status: "pending",
+    });
+    console.log(activeTrades);
     res.json({ user, totalCards, activeTrades });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
@@ -202,7 +210,7 @@ const getUserStats = async (req, res) => {
 
 const getUserAlbum = async (req, res) => {
   const { userId } = req.params;
-  const { page = 1, searchTerm = "", selectedRarity = "" } = req.query;
+  const { page = 1, searchTerm = "", selectedRarity = "" ,quantityOrder="asc"} = req.query;
   const limit = 15;
   const skip = (page - 1) * limit; // Calculate the number of documents to skip
   console.log(page, searchTerm, selectedRarity);
@@ -215,15 +223,20 @@ const getUserAlbum = async (req, res) => {
     }
 
     // Filter the album based on search and rarity
-    const filteredAlbum = user.album.filter((item) => {
+    let filteredAlbum = user.album.filter((item) => {
       return (
         (!searchTerm ||
           item.hero.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (!selectedRarity || item.hero.rarity.toLowerCase() === selectedRarity.toLowerCase())
+        (!selectedRarity ||
+          item.hero.rarity.toLowerCase() === selectedRarity.toLowerCase())
       );
     });
+  
+    // Ordina l'album in base alla quantità, tenendo conto del parametro quantityOrder
+    filteredAlbum = filteredAlbum.sort((a, b) => {
+      return quantityOrder === "asc" ? a.count - b.count : b.count - a.count;
+    });
 
-    //console.log(filteredAlbum);
     // Paginate the filtered album
     const paginatedAlbum = filteredAlbum.slice(skip, skip + limit);
 
@@ -275,5 +288,5 @@ module.exports = {
   getUserAlbum,
   getUserTrades,
   getUserPackages,
-  getUserStats
+  getUserStats,
 };

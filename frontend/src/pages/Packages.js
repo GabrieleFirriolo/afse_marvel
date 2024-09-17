@@ -179,7 +179,7 @@ const PackagePage = () => {
       <Typography variant="h4" fontWeight="bold" gutterBottom>
         Your Packages
       </Typography>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} >
         {packages.map((pack, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <PackageCard
@@ -276,7 +276,7 @@ const PackagePage = () => {
                   Open the package to reveal the cards
                 </Typography>
               )}
-              <Grid container spacing={2} sx={{ justifyContent: "center" }}>
+              <Grid container spacing={2} sx={{ justifyContent: "center",mt: openedCards.length }}>
                 {openedCards.map((card, index) => (
                   <Grid item key={index}>
                     <FlippableCard

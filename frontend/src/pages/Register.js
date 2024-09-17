@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import {
   TextField,
   Button,
@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import API from "../utils/api";
 import HeroComboBox from "../components/HeroComboBox";
+import UserContext from "../context/userContext";
 
 const RegisterPage = ({ onRegisterSuccess }) => {
   const [username, setUsername] = useState("");
@@ -16,6 +17,7 @@ const RegisterPage = ({ onRegisterSuccess }) => {
   const [password, setPassword] = useState("");
   const [favoriteHero, setFavoriteHero] = useState(null); // Cambiato da stringa a oggetto
   const [error, setError] = useState("");
+  const { updateUser } = useContext(UserContext);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -26,10 +28,11 @@ const RegisterPage = ({ onRegisterSuccess }) => {
         password,
         favoriteHero: favoriteHero ? favoriteHero._id : null, // Invia solo l'ID dell'eroe
       });
-      const { token } = response.data;
-      
+      const { token,user } = response.data;
       localStorage.setItem("token", token);
-      localStorage.setItem("id", response.data.user.id);
+      localStorage.setItem("id", user.id);
+      localStorage.setItem("role", user.role);
+      updateUser(user);
       onRegisterSuccess();
     } catch (error) {
       setError("Registration failed");
