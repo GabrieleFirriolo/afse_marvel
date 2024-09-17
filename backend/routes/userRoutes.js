@@ -9,7 +9,8 @@ const {
   getUserAlbum,
   getUserTrades,
   getUserPackages,
-  getUserStats
+  getUserStats,
+  deleteUser
 } = require("../controllers/userController");
 const { protect } = require("../middleware/authMiddleware");
 const router = express.Router();
@@ -316,4 +317,31 @@ router.get("/packages/:userId",protect,getUserPackages);
  *         description: User not found
  */
 router.get("/stats/:userId",protect,getUserStats);
+
+
+/**
+ * @swagger
+ * /api/users/delete/{userId}:
+ *   delete:
+ *     summary: Delete user
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: User not found
+ */
+router.delete('/delete-user/:userId', protect,deleteUser);
+
 module.exports = router;

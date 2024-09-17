@@ -42,9 +42,7 @@ export const UserProvider = ({ children }) => {
         const response = await API.get(
           `/users/album/${id}?page=${page}&searchTerm=${searchTerm}&selectedRarity=${selectedRarity}&quantityOrder=${quantityOrder}`
         );
-        //setAlbum(response.data.album);
         setTotalCards(response.data.totalCards);
-        //setTotalPages(response.totalPages);
         return response.data;
       }
     } catch (error) {
@@ -64,7 +62,7 @@ export const UserProvider = ({ children }) => {
           acc[typeId] = {
             ...pack.packageType,
             quantity: 1,
-            _id: pack._id, // Use the first package _id for interaction
+            _id: pack._id, 
           };
         } else {
           acc[typeId].quantity += 1;
@@ -75,7 +73,7 @@ export const UserProvider = ({ children }) => {
       setPackages(Object.values(groupedPackages));
     } catch (error) {
       console.error("Error fetching packages:", error);
-      setPackages([]); // Ensure packages is an array in case of error
+      setPackages([]); 
     }
   };
 

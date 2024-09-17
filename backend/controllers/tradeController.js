@@ -140,16 +140,13 @@ const acceptTrade = async (req, res) => {
 
     // Gestione dei crediti
     if (trade.proposedCredits >= 0 && trade.requestedCredits >= 0) {
-      // proposer.credits -= Number(trade.proposedCredits);
       acceptor.credits -= Number(trade.requestedCredits);
 
-      // proposer.credits += Number(trade.requestedCredits);
       acceptor.credits += Number(trade.proposedCredits);
       if (acceptor.credits < 0) {
         return res.status(400).json({ error: "Insufficient credits" });
       }
     } else {
-      // Handle the case where either proposedCredits or requestedCredits is not provided or is 0
       return res
         .status(400)
         .json({ error: "Invalid proposedCredits or requestedCredits" });
@@ -173,7 +170,7 @@ const acceptTrade = async (req, res) => {
 // Rimozione di uno scambio ancora pending
 const deleteTrade = async (req, res) => {
   const { tradeId } = req.params;
-  const { userId } = req.body; // Assumi che l'ID dell'utente che richiede la cancellazione sia passato nel corpo della richiesta
+  const { userId } = req.body;
   try {
     // Trova lo scambio da cancellare
     const trade = await Trade.findById(tradeId);
@@ -244,7 +241,7 @@ const getTradeCards = async (req, res) => {
     }
 
     // Filtra gli eroi con il nome che corrisponde al parametro di ricerca
-    const searchRegex = new RegExp(search, "i"); // RegExp case-insensitive
+    const searchRegex = new RegExp(search, "i"); 
 
     const allHeroes = await Hero.find({ name: searchRegex });
 
@@ -254,7 +251,7 @@ const getTradeCards = async (req, res) => {
     let limitedCards = [];
     if (type === "offer") {
       const ownedCards = user.album
-        .filter((entry) => searchRegex.test(entry.hero.name) && entry.count > 1) // Filtraggio delle carte offerte
+        .filter((entry) => searchRegex.test(entry.hero.name) && entry.count > 1) 
         .map((entry) => ({
           _id: entry.hero._id,
           name: entry.hero.name,
@@ -277,7 +274,6 @@ const getTradeCards = async (req, res) => {
       return res.status(400).json({ error: "Invalid type parameter" });
     }
     
-    // Risposta JSON
     res.json({ cards: limitedCards });
   } catch (error) {
     res.status(400).json({ error: error.message });

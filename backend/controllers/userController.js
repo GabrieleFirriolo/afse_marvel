@@ -152,18 +152,57 @@ const updateUser = async (req, res) => {
   console.log(password);
   try {
     const user = await User.findById(userId).select("-password -album");
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    } else {
-      user.username = username;
-      user.email = email;
-      user.favoriteHero = favoriteHero;
-      user.password = password;
-      await user.save();
-      res.status(200).json({ message: "User updated successfully", user });
-    }
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const emailExists = await User.findOne({ email: email });
+    if (emailExists && emailExists._id.toString() !== userId)
+      return res.status(400).json({ error: "Email already exists" });
+
+    user.username = username;
+    user.email = email;
+    user.favoriteHero = favoriteHero;
+    user.password = password;
+    await user.save();
+    res.status(200).json({ message: "User updated successfully", user });
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  const { userId } = req.params;
+
+  const authenticatedUserId = req.user.id; // L'ID dell'utente autenticato, dal token
+  try {
+    // Verifica che l'utente che effettua la richiesta sia lo stesso utente da eliminare
+    if (authenticatedUserId !== userId) {
+      return res
+        .status(401)
+        .json({ error: "Unauthorized: You can only delete your own account" });
+    }
+
+    // Trova l'utente da eliminare
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Elimina tutti i pacchetti comprati dall'utente
+    await Package.deleteMany({ user: userId });
+
+    // Elimina tutti gli scambi dove l'utente è il proponente e lo stato è pending
+    await Trade.deleteMany({ proposer: userId, status: "pending" });
+
+    // Elimina l'utente
+    await User.findByIdAndDelete(userId);
+
+    res
+      .status(200)
+      .json({ message: "User and associated data deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
@@ -180,14 +219,12 @@ const getUserProfile = async (req, res) => {
 const getUserStats = async (req, res) => {
   const { userId } = req.params;
   try {
-    // Find the user and populate the album to count the total cards
     const user = await User.findById(userId).select("-password");
     const totalCards = user.album.reduce(
       (total, item) => total + item.count,
       0
     );
 
-    // Find the user's active trades
     const activeTrades = await Trade.countDocuments({
       proposer: userId,
       status: "pending",
@@ -199,16 +236,6 @@ const getUserStats = async (req, res) => {
   }
 };
 
-// const getUserAlbum = async (req, res) => {
-//   const { userId } = req.params;
-//   try {
-//     const user = await User.findById(userId).populate('album.hero');
-//     res.json({ album: user.album });
-//   } catch (error) {
-//     res.status(500).json({ error: 'Server error' });
-//   }
-// };
-
 const getUserAlbum = async (req, res) => {
   const { userId } = req.params;
   const {
@@ -218,17 +245,17 @@ const getUserAlbum = async (req, res) => {
     quantityOrder = "asc",
   } = req.query;
   const limit = 15;
-  const skip = (page - 1) * limit; // Calculate the number of documents to skip
+  const skip = (page - 1) * limit;
   console.log(page, searchTerm, selectedRarity);
   try {
-    // Find the user's album
+    // Trova l'album dell'utente
     const user = await User.findById(userId).populate("album.hero");
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Filter the album based on search and rarity
+    // Filtra l'album dell'utente
     let filteredAlbum = user.album.filter((item) => {
       return (
         (!searchTerm ||
@@ -243,10 +270,9 @@ const getUserAlbum = async (req, res) => {
       return quantityOrder === "asc" ? a.count - b.count : b.count - a.count;
     });
 
-    // Paginate the filtered album
+    // Pagina l'album filtrato
     const paginatedAlbum = filteredAlbum.slice(skip, skip + limit);
 
-    // Total cards after filtering
     const totalCards = filteredAlbum.length;
 
     res.json({
@@ -295,4 +321,5 @@ module.exports = {
   getUserTrades,
   getUserPackages,
   getUserStats,
+  deleteUser,
 };

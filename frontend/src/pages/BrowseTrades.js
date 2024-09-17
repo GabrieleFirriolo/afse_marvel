@@ -71,7 +71,6 @@ const TradePlatformPage = () => {
   const handleNotificationClose = () => {
     setNotification((prev) => ({ ...prev, open: false }));
   };
-  // Add a function to handle deleting a trade
   const handleDeleteTrade = async (tradeId) => {
     try {
       const response = await API.post(`/trades/delete/${tradeId}`, {
@@ -355,8 +354,8 @@ const TradePlatformPage = () => {
             open={!!selectedTrade}
             onClose={() => setSelectedTrade(null)}
             trade={selectedTrade}
-            fetchTradeOffers={fetchTradeOffers} // pass down fetchTradeOffers function
-            setNotification={setNotification} // pass down setNotification function
+            fetchTradeOffers={fetchTradeOffers} 
+            setNotification={setNotification} 
           />
         )}
       </Box>

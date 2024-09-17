@@ -8,7 +8,7 @@ const packageTypeSchema = new mongoose.Schema({
   guaranteedRare: { type: Number, default: 0 },
   guaranteedEpic: { type: Number, default: 0 },
   guaranteedLegendary: { type: Number, default: 0 },
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Admin user who created the package
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdAt: { type: Date, default: Date.now },
   isAvailable: { type: Boolean, default: true },
 });

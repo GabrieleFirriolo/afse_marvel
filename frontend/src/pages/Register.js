@@ -35,7 +35,8 @@ const RegisterPage = ({ onRegisterSuccess }) => {
       updateUser(user);
       onRegisterSuccess();
     } catch (error) {
-      setError("Registration failed");
+      console.log(error);
+      setError("Registration failed : "+error.response.data.error);
     }
   };
 

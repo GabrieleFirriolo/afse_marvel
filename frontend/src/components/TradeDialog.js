@@ -34,13 +34,13 @@ const getShadowByRarity = (rarity) => {
   }
 };
 const CardBox = styled(Card)(({ rarity }) => ({
-  width: "100px", // Use the same width
-  height: "150px", // Use the same height
-  border: "4px solid #292524", // Use border styling from AlbumCard
+  width: "100px", 
+  height: "150px", 
+  border: "4px solid #292524",
   borderRadius: "8px",
-  boxShadow: getShadowByRarity(rarity), // Shadow based on rarity
+  boxShadow: getShadowByRarity(rarity),
   position: "relative",
-  transition: "transform 0.6s ease-in-out", // Smooth hover transition
+  transition: "transform 0.6s ease-in-out",
   cursor: "pointer",
   overflow: "visible",
   margin: "8px",
@@ -83,7 +83,7 @@ const TradeDialog = ({
         severity: "success",
       });
       if (fetchTradeOffers) {
-        fetchTradeOffers(); // Refresh the list of trades
+        fetchTradeOffers(); // Ricarca la lista dei trade
       }
       handleCloseTradeDialog();
     } catch (error) {
@@ -132,7 +132,7 @@ const TradeDialog = ({
                   <CardBox
                     key={index}
                     rarity={card.rarity}
-                    selected={false} // Assuming this is not selectable, adjust if necessary
+                    selected={false}
                     sx={{
                       backgroundImage: `url(${card.image})`,
                       backgroundSize: "cover",
@@ -163,7 +163,7 @@ const TradeDialog = ({
                           sx={{
                             color: "#ffffff",
                             fontFamily: "serif",
-                            fontSize: Math.max(12, 18 - card.name.length / 3), // Dynamic font size based on text length
+                            fontSize: Math.max(12, 18 - card.name.length / 3), 
                           }}
                         >
                           {card.name}
@@ -241,7 +241,7 @@ const TradeDialog = ({
                   <CardBox
                     key={index}
                     rarity={card.rarity}
-                    selected={false} // Assuming this is not selectable, adjust if necessary
+                    selected={false} 
                     sx={{
                       backgroundImage: `url(${card.image})`,
                       backgroundSize: "cover",
@@ -272,7 +272,7 @@ const TradeDialog = ({
                           sx={{
                             color: "#ffffff",
                             fontFamily: "serif",
-                            fontSize: Math.max(12, 18 - card.name.length / 3), // Dynamic font size based on text length
+                            fontSize: Math.max(12, 18 - card.name.length / 3), 
                           }}
                         >
                           {card.name}

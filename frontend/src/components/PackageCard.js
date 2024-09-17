@@ -180,7 +180,7 @@ const PackageCard = ({ pack }) => {
                 component="div"
                 sx={{
                   color: "#ffffff",
-                  fontSize: Math.max(12, 18 - pack.name.length / 3), // Dynamic font size based on text length
+                  fontSize: Math.max(12, 18 - pack.name.length / 3), 
                 }}
               >
                 {pack.name}

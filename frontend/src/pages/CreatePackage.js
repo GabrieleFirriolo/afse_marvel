@@ -11,13 +11,13 @@ import {
   InputLabel,
 } from "@mui/material";
 import API from "../utils/api";
-import Notification from "../components/Notification"; // Importa il componente Notification
+import Notification from "../components/Notification"; 
 
 const CreatePackage = () => {
   const [packageName, setPackageName] = useState("");
   const [description, setDescription] = useState("");
   const [cost, setCost] = useState(0);
-  const [numHeroes, setNumHeroes] = useState(10); // Impostato a 10 come valore iniziale
+  const [numHeroes, setNumHeroes] = useState(10); 
   const [guaranteedHeroes, setGuaranteedHeroes] = useState({
     rare: 0,
     epic: 0,

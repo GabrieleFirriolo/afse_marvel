@@ -125,7 +125,6 @@ const buyPackage = async (req, res) => {
   }
 };
 
-//TODO: Vedere se rimuovere gli eroi dallo schema e quindi non assegnarli al pacchetto aperto
 // Apertura di un pacchetto
 const openPackage = async (req, res) => {
   const { userId, packageId } = req.body;
@@ -181,7 +180,7 @@ const openPackage = async (req, res) => {
   }
 };
 
-// prendi tutti i tipi di pacchetti "featured"
+// Prendi tutti i tipi di pacchetti "featured"
 const getFeaturedPackages = async (req, res) => {
   try {
     const thirtyDaysAgo = new Date();

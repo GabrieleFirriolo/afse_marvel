@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Delete } from "@mui/icons-material"; // Import del'icona Delete
+import API from "../utils/api";
 import {
   Box,
   Card,
@@ -14,7 +16,7 @@ import {
 } from "@mui/material";
 import { Edit, Save, Cancel } from "@mui/icons-material";
 import UserContext from "../context/userContext";
-import HeroComboBox from "../components/HeroComboBox"; // Import the HeroComboBox component
+import HeroComboBox from "../components/HeroComboBox";
 import { getHeroById, getUserStats, updateUserProfile } from "../utils/api";
 import Notification from "../components/Notification";
 import { getShadowByRarity } from "../utils/functions";
@@ -37,6 +39,29 @@ const ProfilePage = () => {
   });
   const { username, email, avatarUrl, favoriteHero, credits, role } = user;
   const id = localStorage.getItem("id");
+  const handleDeleteProfile = async () => {
+    try {
+      await API.delete(`/users/delete-user/${id}`);
+      setNotification({
+        open: true,
+        message: "Profile deleted successfully!",
+        severity: "success",
+      });
+      // Logout user after deletion
+      localStorage.removeItem("token");
+      localStorage.removeItem("id");
+      setUser(null); // Reset user context
+      window.location.href = "/register"; // Redirect to register page after deletion
+    } catch (error) {
+        setNotification({
+        open: true,
+        message: `Error deleting profile: ${
+          error.response?.data?.error || error.message
+        }`,
+        severity: "error",
+      });
+    }
+  };
   const handleNotificationClose = () => {
     setNotification({ ...notification, open: false });
   };
@@ -67,7 +92,6 @@ const ProfilePage = () => {
   };
   const handleUpdateProfile = async () => {
     try {
-
       const updatedUser = await updateUserProfile(id, updatedProfile);
       setUser(updatedUser.user);
       setIsEditing(false);
@@ -206,14 +230,23 @@ const ProfilePage = () => {
                 Total Cards: {userStats?.totalCards || 0}
               </Typography>
               {/* {user._id === userStats?.user._id && ( */}
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  sx={{ mt: 2 }}
-                  onClick={() => setIsEditing(true)}
-                >
-                  Edit Profile
-                </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{ mt: 2 }}
+                onClick={() => setIsEditing(true)}
+              >
+                Edit Profile
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                sx={{ mt: 2, ml: 2 }}
+                startIcon={<Delete />}
+                onClick={handleDeleteProfile}
+              >
+                Delete Profile
+              </Button>
               {/* )} */}
             </>
           )}
