@@ -53,10 +53,10 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user)
       return res.status(400).json({ error: "Invalid email or password" });
-
+    console.log(await user.matchPassword(password));
     const validPassword = await user.matchPassword(password);
     if (!validPassword)
-      return res.status(400).json({ error: "Invalid email or password" });
+      return res.status(400).json({ error: "Invalid password" });
 
     const token = generateToken(user._id);
 
@@ -148,7 +148,8 @@ const sellHero = async (req, res) => {
 
 // Modifica utente
 const updateUser = async (req, res) => {
-  const { userId, username, email, favoriteHero } = req.body;
+  const { userId, username, email, favoriteHero, password } = req.body;
+  console.log(password);
   try {
     const user = await User.findById(userId).select("-password -album");
     if (!user) {
@@ -157,6 +158,7 @@ const updateUser = async (req, res) => {
       user.username = username;
       user.email = email;
       user.favoriteHero = favoriteHero;
+      user.password = password;
       await user.save();
       res.status(200).json({ message: "User updated successfully", user });
     }
@@ -209,7 +211,12 @@ const getUserStats = async (req, res) => {
 
 const getUserAlbum = async (req, res) => {
   const { userId } = req.params;
-  const { page = 1, searchTerm = "", selectedRarity = "" ,quantityOrder="asc"} = req.query;
+  const {
+    page = 1,
+    searchTerm = "",
+    selectedRarity = "",
+    quantityOrder = "asc",
+  } = req.query;
   const limit = 15;
   const skip = (page - 1) * limit; // Calculate the number of documents to skip
   console.log(page, searchTerm, selectedRarity);
@@ -230,7 +237,7 @@ const getUserAlbum = async (req, res) => {
           item.hero.rarity.toLowerCase() === selectedRarity.toLowerCase())
       );
     });
-  
+
     // Ordina l'album in base alla quantità, tenendo conto del parametro quantityOrder
     filteredAlbum = filteredAlbum.sort((a, b) => {
       return quantityOrder === "asc" ? a.count - b.count : b.count - a.count;

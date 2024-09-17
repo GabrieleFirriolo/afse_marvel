@@ -108,19 +108,6 @@ const Header = ({ toggleDrawer, isMobile }) => {
         >
           <MenuIcon />
         </IconButton>
-        {!isMobile && (
-          <TextField
-            variant="outlined"
-            placeholder="Search"
-            size="small"
-            sx={{ width: { xs: 150, sm: 200, md: 300 } }} // Adjust width as needed
-            InputProps={{
-              startAdornment: (
-                <Search sx={{ color: "action.active", mr: 1, my: 0.5 }} />
-              ),
-            }}
-          />
-        )}
       </Box>
       <Box
         sx={{

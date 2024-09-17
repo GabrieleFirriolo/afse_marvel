@@ -36,6 +36,7 @@ const ProfilePage = () => {
     severity: "success",
   });
   const { username, email, avatarUrl, favoriteHero, credits, role } = user;
+  const id = localStorage.getItem("id");
   const handleNotificationClose = () => {
     setNotification({ ...notification, open: false });
   };
@@ -43,7 +44,7 @@ const ProfilePage = () => {
     const fetchData = async () => {
       try {
         const fetchedHero = await getHeroById(favoriteHero);
-        const stats = await getUserStats(user._id);
+        const stats = await getUserStats(id);
         setHero(fetchedHero);
         setUserStats(stats);
       } catch (error) {
@@ -54,7 +55,7 @@ const ProfilePage = () => {
     };
 
     fetchData();
-  }, [favoriteHero, user._id]);
+  }, [favoriteHero, id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -66,7 +67,8 @@ const ProfilePage = () => {
   };
   const handleUpdateProfile = async () => {
     try {
-      const updatedUser = await updateUserProfile(user._id, updatedProfile);
+
+      const updatedUser = await updateUserProfile(id, updatedProfile);
       setUser(updatedUser.user);
       setIsEditing(false);
       setNotification({
@@ -108,7 +110,7 @@ const ProfilePage = () => {
         }}
       >
         <Avatar
-          src={(hero && hero.image)}
+          src={hero && hero.image}
           alt={username}
           sx={{
             width: 120,
@@ -203,7 +205,7 @@ const ProfilePage = () => {
               <Typography variant="subtitle1" sx={{ color: "white" }}>
                 Total Cards: {userStats?.totalCards || 0}
               </Typography>
-              {user._id === userStats?.user._id && (
+              {/* {user._id === userStats?.user._id && ( */}
                 <Button
                   variant="contained"
                   color="secondary"
@@ -212,7 +214,7 @@ const ProfilePage = () => {
                 >
                   Edit Profile
                 </Button>
-              )}
+              {/* )} */}
             </>
           )}
         </Box>
@@ -246,7 +248,7 @@ const ProfilePage = () => {
                     backgroundPosition: "center",
                     border: "4px solid #292524",
                     borderRadius: "8px",
-                    boxShadow: getShadowByRarity(hero.rarity,4,12),
+                    boxShadow: getShadowByRarity(hero.rarity, 4, 12),
                     position: "relative",
                     transition: "transform 0.6s ease-in-out",
                     cursor: "pointer",

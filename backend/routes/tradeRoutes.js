@@ -63,7 +63,7 @@ const { protect } = require("../middleware/authMiddleware");
  *                 message:
  *                   type: string
  *                 trade:
- *                   $ref: '#/components/schemas/Trade'
+ *                   $ref: '#/models/Trade'
  *       400:
  *         description: Bad request
  */
@@ -106,7 +106,7 @@ router.post("/propose", protect, proposeTrade);
  *                 message:
  *                   type: string
  *                 trade:
- *                   $ref: '#/components/schemas/Trade'
+ *                   $ref: '#/models/Trade'
  *       400:
  *         description: Bad request
  *       404:
@@ -133,7 +133,7 @@ router.put("/accept/:tradeId", protect, acceptTrade);
  *                 trades:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Trade'
+ *                     $ref: '#/models/Trade'
  *       500:
  *         description: Server error
  */
@@ -266,7 +266,7 @@ router.post("/delete/:tradeId", protect, deleteTrade);
  *                 trades:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Trade'
+ *                     $ref: '#/models/Trade'
  *       500:
  *         description: Server error
  */
