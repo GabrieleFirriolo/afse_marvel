@@ -188,6 +188,7 @@ const getFeaturedPackages = async (req, res) => {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     const featuredPackages = await PackageType.find({
+      isAvailable: true,
       createdAt: { $gte: thirtyDaysAgo },
     });
 

@@ -5,21 +5,6 @@ const Hero = require('../models/Hero');
 
 dotenv.config();
 
-// const calculateRarity = (hero) => {
-//   const totalAppearances = hero.series.available + hero.events.available + hero.comics.available + hero.stories.available;
-
-//   if (totalAppearances > 100) {
-//     return 'legendary';
-//   } else if (totalAppearances > 50) {
-//     return 'epic';
-//   } else if (totalAppearances > 20) {
-//     return 'rare';
-//   } else if (totalAppearances > 10) {
-//     return 'uncommon';
-//   } else {
-//     return 'common';
-//   }
-// };
 const rarityPercentages = {
   legendary: 0.01,
   epic: 0.04,

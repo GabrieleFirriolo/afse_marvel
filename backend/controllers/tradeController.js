@@ -113,36 +113,6 @@ const acceptTrade = async (req, res) => {
       }
     }
 
-    // // Aggiorna gli album degli utenti
-    // const proposer = await User.findById(trade.proposer._id).populate(
-    //   "album.hero"
-    // );
-
-    // // Rimuove gli eroi proposti dall'album del proponente e aggiunge quelli richiesti
-    // trade.proposedHeroes.forEach((hero) => {
-    //   const heroInAlbum = proposer.album.find(
-    //     (entry) => entry.hero._id.toString() === hero._id.toString()
-    //   );
-    //   if (heroInAlbum) {
-    //     heroInAlbum.count -= 1;
-    //     if (heroInAlbum.count <= 0) {
-    //       proposer.album = proposer.album.filter(
-    //         (entry) => entry.hero._id.toString() !== hero._id.toString()
-    //       );
-    //     }
-    //   }
-    // });
-    // trade.requestedHeroes.forEach((hero) => {
-    //   const heroInAlbum = proposer.album.find(
-    //     (entry) => entry.hero._id.toString() === hero._id.toString()
-    //   );
-    //   if (heroInAlbum) {
-    //     heroInAlbum.count += 1;
-    //   } else {
-    //     proposer.album.push({ hero: hero._id, count: 1 });
-    //   }
-    // });
-
     // Rimuove gli eroi richiesti dall'album dell'accettante e aggiunge quelli proposti
     trade.requestedHeroes.forEach((hero) => {
       const heroInAlbum = acceptor.album.find(
@@ -170,7 +140,6 @@ const acceptTrade = async (req, res) => {
 
     // Gestione dei crediti
     if (trade.proposedCredits >= 0 && trade.requestedCredits >= 0) {
-      // console.log(trade.proposedCredits, trade.requestedCredits);
       // proposer.credits -= Number(trade.proposedCredits);
       acceptor.credits -= Number(trade.requestedCredits);
 

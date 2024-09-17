@@ -44,7 +44,6 @@ const registerUser = async (req, res) => {
 
 // Login utente
 const loginUser = async (req, res) => {
-  console.log("RADIO");
   const { error } = loginValidation(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
