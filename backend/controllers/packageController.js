@@ -180,6 +180,65 @@ const openPackage = async (req, res) => {
   }
 };
 
+// Funzione per aprire tutti i pacchetti e poi eliminare il pacchetto
+const deletePackageType = async (req, res) => {
+  const { packageId } = req.params;
+
+  try {
+    // Trova tutti i pacchetti non aperti associati a questo packageType
+    const unopenedPackages = await Package.find({
+      packageType: packageId,
+      opened: false,
+    });
+    if (unopenedPackages === null) {
+      return res.status(404).json({ error: "No unopened packages found" });
+    }
+
+    // Apri tutti i pacchetti non aperti
+    for (const unopenedPackage of unopenedPackages) {
+      const user = await User.findById(unopenedPackage.user);
+      const packageType = await PackageType.findById(unopenedPackage.packageType);
+
+      const guaranteed = {
+        rare: packageType.guaranteedRare,
+        epic: packageType.guaranteedEpic,
+        legendary: packageType.guaranteedLegendary,
+      };
+
+      const heroes = await getRandomHeroes(packageType.numberOfHeroes, guaranteed);
+
+      // Aggiorna l'album dell'utente
+      heroes.forEach((hero) => {
+        const existingEntry = user.album.find(
+          (entry) => entry.hero.toString() === hero._id.toString()
+        );
+        if (existingEntry) {
+          existingEntry.count += 1;
+        } else {
+          user.album.push({ hero: hero._id, count: 1 });
+        }
+      });
+
+      unopenedPackage.opened = true;
+      unopenedPackage.heroes = heroes.map((hero) => hero._id);
+
+      // Salva le modifiche
+      await user.save();
+      await unopenedPackage.save();
+    }
+
+    // Elimina il pacchetto dal database
+    await PackageType.findByIdAndDelete(packageId);
+    await Package.deleteMany({ packageType: packageId }); // Rimuovi anche tutti i pacchetti legati a questo tipo
+
+    res.status(200).json({ message: "Package and associated unopened packages deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting package type:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+
 // Prendi tutti i tipi di pacchetti "featured"
 const getFeaturedPackages = async (req, res) => {
   try {
@@ -241,4 +300,5 @@ module.exports = {
   getFeaturedPackages,
   getAvailablePackagesTypes,
   getAllPackagesTypes,
+  deletePackageType
 };

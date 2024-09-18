@@ -55,7 +55,7 @@ const CreatePackage = () => {
         description,
         price: cost,
         numberOfHeroes: numHeroes,
-        guanteedRare: guaranteedHeroes.rare,
+        guaranteedRare: guaranteedHeroes.rare,
         guaranteedEpic: guaranteedHeroes.epic,
         guaranteedLegendary: guaranteedHeroes.legendary,
       });

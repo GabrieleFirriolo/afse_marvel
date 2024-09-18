@@ -9,7 +9,9 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   Switch,
+  IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete"; // Icona per il pulsante di eliminazione
 import API from "../utils/api";
 
 const ManagePackages = () => {
@@ -20,7 +22,7 @@ const ManagePackages = () => {
     const fetchPackages = async () => {
       try {
         const response = await API.get("/packages/all-package-types");
-        console.log(response.data); 
+        console.log(response.data);
         setPackages(response.data);
       } catch (error) {
         console.error("Error fetching packages:", error);
@@ -46,6 +48,21 @@ const ManagePackages = () => {
     }
   };
 
+  const deletePackage = async (packageId) => {
+    try {
+      // Call the API to delete the package and open all packages before deletion
+      const response = await API.delete(`/packages/delete-package-type/${packageId}`);
+      console.log(response.data.message);
+
+      // Remove the deleted package from the state
+      setPackages((prevPackages) =>
+        prevPackages.filter((pkg) => pkg._id !== packageId)
+      );
+    } catch (error) {
+      console.error("Error deleting package:", error);
+    }
+  };
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
@@ -64,6 +81,9 @@ const ManagePackages = () => {
                 onChange={() => toggleAvailability(pkg._id)}
                 color="primary"
               />
+              <IconButton edge="end" aria-label="delete" onClick={() => deletePackage(pkg._id)}>
+                <DeleteIcon color="error" />
+              </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
         ))}

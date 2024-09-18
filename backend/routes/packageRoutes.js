@@ -1,8 +1,17 @@
 const express = require("express");
-const { createPackageType,togglePackageType, buyPackage, openPackage,getFeaturedPackages,getAvailablePackagesTypes, getAllPackagesTypes } = require("../controllers/packageController");
+const {
+  createPackageType,
+  togglePackageType,
+  deletePackageType,
+  buyPackage,
+  openPackage,
+  getFeaturedPackages,
+  getAvailablePackagesTypes,
+  getAllPackagesTypes,
+} = require("../controllers/packageController");
 const router = express.Router();
 const { adminOnly } = require("../middleware/authMiddleware");
-const { protect } = require('../middleware/authMiddleware');
+const { protect } = require("../middleware/authMiddleware");
 
 /**
  * @swagger
@@ -50,6 +59,29 @@ router.post("/create-package-type", adminOnly, createPackageType); // Accessibil
 
 /**
  * @swagger
+ * /api/packages/delete-package-type/{packageId}:
+ *   delete:
+ *     summary: Delete a package type
+ *     tags: [Packages]
+ *     parameters:
+ *       - in: path
+ *         name: packageId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The package type ID
+ *     responses:
+ *       200:
+ *         description: Package type deleted successfully
+ *       404:
+ *         description: Package type not found
+ *       500:
+ *         description: Server error
+ */
+router.delete("/delete-package-type/:packageId", protect, deletePackageType);
+
+/**
+ * @swagger
  * /api/packages/buy:
  *   post:
  *     summary: Buy a package
@@ -71,7 +103,7 @@ router.post("/create-package-type", adminOnly, createPackageType); // Accessibil
  *       400:
  *         description: Bad request
  */
-router.post("/buy",protect, buyPackage);
+router.post("/buy", protect, buyPackage);
 
 /**
  * @swagger
@@ -96,7 +128,7 @@ router.post("/buy",protect, buyPackage);
  *       400:
  *         description: Bad request
  */
-router.post("/open", protect,openPackage);
+router.post("/open", protect, openPackage);
 
 /**
  * @swagger
@@ -135,7 +167,6 @@ router.post("/open", protect,openPackage);
  */
 router.get("/featured", protect, getFeaturedPackages);
 
-
 /**
  * @swagger
  * /api/packages/toggle-package-type/{id}:
@@ -158,7 +189,6 @@ router.get("/featured", protect, getFeaturedPackages);
  *         description: Server error
  */
 router.put("/toggle-package-type/:id", adminOnly, togglePackageType);
-
 
 /**
  * @swagger
@@ -196,7 +226,6 @@ router.put("/toggle-package-type/:id", adminOnly, togglePackageType);
  *         description: Failed to fetch packages
  */
 router.get("/all-package-types", adminOnly, getAllPackagesTypes);
-
 
 /**
  * @swagger

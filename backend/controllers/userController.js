@@ -19,7 +19,9 @@ const registerUser = async (req, res) => {
     const emailExists = await User.findOne({ email });
     if (emailExists)
       return res.status(400).json({ error: "Email already exists" });
-
+    const usernameExists = await User.findOne({ username: username });
+    if (usernameExists && usernameExists._id.toString() !== userId)
+      return res.status(400).json({ error: "Username already exists" });
     const user = new User({ username, email, password, favoriteHero, role });
     await user.save();
 
@@ -157,6 +159,10 @@ const updateUser = async (req, res) => {
     const emailExists = await User.findOne({ email: email });
     if (emailExists && emailExists._id.toString() !== userId)
       return res.status(400).json({ error: "Email already exists" });
+
+    const usernameExists = await User.findOne({ username: username });
+    if (usernameExists && usernameExists._id.toString() !== userId)
+      return res.status(400).json({ error: "Username already exists" });
 
     user.username = username;
     user.email = email;
