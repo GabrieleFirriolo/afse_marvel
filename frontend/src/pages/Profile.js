@@ -4,7 +4,6 @@ import API from "../utils/api";
 import {
   Box,
   Card,
-  CardContent,
   Typography,
   Avatar,
   CircularProgress,
@@ -14,7 +13,7 @@ import {
   IconButton,
   Divider,
 } from "@mui/material";
-import { Edit, Save, Cancel } from "@mui/icons-material";
+import { Save, Cancel } from "@mui/icons-material";
 import UserContext from "../context/userContext";
 import HeroComboBox from "../components/HeroComboBox";
 import { getHeroById, getUserStats, updateUserProfile } from "../utils/api";
@@ -37,7 +36,7 @@ const ProfilePage = () => {
     message: "",
     severity: "success",
   });
-  const { username, email, avatarUrl, favoriteHero, credits, role } = user;
+  const { username, email, favoriteHero, credits, role } = user;
   const id = localStorage.getItem("id");
   const handleDeleteProfile = async () => {
     try {
